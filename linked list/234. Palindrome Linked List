@@ -1,0 +1,65 @@
+Given the head of a singly linked list, return true if it is a palindrome or false otherwise.
+
+ 
+
+Example 1:
+
+
+Input: head = [1,2,2,1]
+Output: true
+Example 2:
+
+
+Input: head = [1,2]
+Output: false
+ 
+
+Constraints:
+
+The number of nodes in the list is in the range [1, 105].
+0 <= Node.val <= 9
+ 
+
+Follow up: Could you do it in O(n) time and O(1) space?
+
+
+##############################
+
+
+class Solution {
+    public ListNode reverse(ListNode node) {
+        ListNode prev = null;
+        ListNode next = null;
+        ListNode curr = node;
+
+        while(curr != null) {
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+
+        return prev;
+    }
+    public boolean isPalindrome(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while(fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+
+        ListNode reverseNode = reverse(slow); // to reverse half of the list
+        ListNode temp = head;
+
+        while(reverseNode != null) {
+            if(temp.val != reverseNode.val) {
+                return false;
+            }
+            temp = temp.next;
+            reverseNode = reverseNode.next;
+
+        }
+        return true;
+    }
+}
