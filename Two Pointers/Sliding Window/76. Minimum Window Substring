@@ -1,0 +1,85 @@
+Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+ 
+
+Example 1:
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+Example 2:
+
+Input: s = "a", t = "a"
+Output: "a"
+Explanation: The entire string s is the minimum window.
+Example 3:
+
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: Both 'a's from t must be included in the window.
+Since the largest window of s only has one 'a', return empty string.
+ 
+
+Constraints:
+
+m == s.length
+n == t.length
+1 <= m, n <= 105
+s and t consist of uppercase and lowercase English letters.
+ 
+
+Follow up: Could you find an algorithm that runs in O(m + n) time?
+
+
+
+
+
+
+#########################################################################
+
+class Solution {
+    public String minWindow(String s, String t) {
+        int start = 0, end = 0;
+        String ans = "";
+        Map<Character, Integer> map = new HashMap<>();
+        for(Character str: t.toCharArray()) {
+            map.put(str, map.getOrDefault(str, 0) + 1);
+        }
+
+        int count = t.length();
+        while(end < s.length()) {
+            Character val = s.charAt(end);
+            if(map.containsKey(val)) {
+                if(map.get(val) > 0) {
+                    count--;
+                }
+                map.put(val, map.get(val) - 1);
+            }
+            if(count == 0) {
+                while(start <= end) {
+                    Character startChar = s.charAt(start);
+                    if(map.containsKey(startChar)) {
+                        if (map.get(startChar) + 1 <= 0) {
+                            map.put(startChar, map.get(startChar) + 1);
+                        } else {
+                            break;
+                        }
+                    }
+                    start++;
+
+                }
+
+                String temp = s.substring(start, end + 1);
+                if(ans.isEmpty() || ans.length() > temp.length()) {
+                    ans = temp;
+                }
+            }
+
+            end++;
+        }
+        return ans;
+
+    }
+}
