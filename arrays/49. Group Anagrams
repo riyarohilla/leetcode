@@ -42,7 +42,8 @@ strs[i] consists of lowercase English letters.
 class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
         Map<String, List<String>> map = new HashMap<>();
-
+       // Time complexity: O(m ∗ nlog⁡n)
+      // Space complexity: O(m ∗ n)
         for(String word: strs) {
             char[] ch = word.toCharArray();
             Arrays.sort(ch);
@@ -55,3 +56,27 @@ class Solution {
         return new ArrayList<>(map.values());
     }
 }
+
+
+
+##############
+
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+       // Time complexity: O(m * n)
+        // Space complexity: O(m ∗ n)
+        Map<String, List<String>> map = new HashMap<>();
+        for(String str: strs) {
+            int[] count = new int[26];
+            for(char ch: str.toCharArray()) {
+                count[ch - 'a']++;
+            }
+            String key = Arrays.toString(count);
+            map.putIfAbsent(key, new ArrayList<>());
+            map.get(key).add(str);
+        }
+        return new ArrayList<>(map.values());
+    }
+}
+
