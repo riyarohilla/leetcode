@@ -1,0 +1,107 @@
+You are given an integer array nums and an integer k.
+
+Find the longest subsequence of nums that meets the following requirements:
+
+The subsequence is strictly increasing and
+The difference between adjacent elements in the subsequence is at most k.
+Return the length of the longest subsequence that meets the requirements.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
+ 
+
+Example 1:
+
+Input: nums = [4,2,1,4,3,4,5,8,15], k = 3
+Output: 5
+Explanation:
+The longest subsequence that meets the requirements is [1,3,4,5,8].
+The subsequence has a length of 5, so we return 5.
+Note that the subsequence [1,3,4,5,8,15] does not meet the requirements because 15 - 8 = 7 is larger than 3.
+Example 2:
+
+Input: nums = [7,4,5,1,8,12,4,7], k = 5
+Output: 4
+Explanation:
+The longest subsequence that meets the requirements is [4,5,8,12].
+The subsequence has a length of 4, so we return 4.
+Example 3:
+
+Input: nums = [1,5], k = 1
+Output: 1
+Explanation:
+The longest subsequence that meets the requirements is [1].
+The subsequence has a length of 1, so we return 1.
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+1 <= nums[i], k <= 105
+
+
+
+
+###########################################
+
+
+class Solution {
+    private int[] segTree;
+    private int size;
+    public int lengthOfLIS(int[] nums, int k) {
+        int maxVal = 0; 
+        for(int num : nums) {
+            maxVal = Math.max(maxVal, num);
+        }
+        size = maxVal + 1;
+        segTree = new int[4 * size];
+
+        int ans = 1;
+        for(int num : nums) {
+            int left = Math.max(0, num - k);
+            int right = num - 1;
+            int bestVal = 0;
+            if(left <= right) {
+                bestVal = query(0, 0, size - 1, left, right);
+            }
+            int curr = bestVal + 1;
+            update(0, 0, size - 1, num, curr);
+            ans = Math.max(ans, curr);
+        }
+        return ans;
+    }
+
+    int query(int root, int start, int end, int left, int right) {
+        if(right < start || end < left) {
+            return 0;
+        }
+        if(left <= start && end <= right) {
+            return segTree[root];
+        }
+        int mid = (start + end)/2;
+        return Math.max(
+            query(2*root + 1, start, mid, left, right), 
+            query(2*root + 2, mid+1, end, left, right)
+            );
+    }
+
+    void update(int root, int start, int end, int num, int curr) {
+        if(start == end) {
+            segTree[root] = Math.max(segTree[root], curr);
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        if (num <= mid) {
+            update(2*root + 1, start, mid, num, curr);
+        } else {
+            update(2*root + 2, mid + 1, end, num, curr);
+        }
+
+        segTree[root] = Math.max(segTree[2*root + 1], segTree[2*root + 2]);
+
+    }
+}
+
+
+t.c - O(n log Max value of arr), s.c O(max value of arr)
