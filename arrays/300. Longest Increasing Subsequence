@@ -1,0 +1,87 @@
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+ 
+
+Example 1:
+
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+Example 2:
+
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+Example 3:
+
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+ 
+
+Constraints:
+
+1 <= nums.length <= 2500
+-104 <= nums[i] <= 104
+
+
+
+
+###################################################################
+
+
+
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        // int n = nums.length;
+        // if (nums == null || n == 0) {
+        //     return 0;
+        // }
+        // int[] dp = new int[n+1];
+        // int ans = 1;
+        // Arrays.fill(dp,1);
+        // for(int i = 1; i < n; i++) {
+        //    for(int j = 0; j < i; j++) {
+        //     if(nums[i] > nums[j]) {
+        //         dp[i] = Math.max(dp[j] + 1, dp[i]);
+        //         ans = Math.max(ans, dp[i]);
+        //     }
+        //    }
+        // }
+
+        // return ans;
+
+
+Time Complexity - O(n²)
+Space Complexity - O(n)
+
+        List<Integer> ans = new ArrayList<>();
+        for(int num: nums) {
+            if(ans.isEmpty() || ans.get(ans.size() - 1) < num) {
+                ans.add(num);
+            } else {
+                int index = search(ans, num);
+                ans.set(index, num);
+            }
+        }
+        return ans.size();
+    }
+
+    private int search(List<Integer> ans, int target) {
+        int left = 0, right = ans.size() - 1;
+        while(left <= right) {
+            int mid = (left + right) / 2;
+            if(ans.get(mid) == target) {
+                return mid;
+            } else if(ans.get(mid) > target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+
+
+
+Time Complexity - O(n logn)
+Space Complexity - O(n)
+}
