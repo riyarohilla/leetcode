@@ -1,0 +1,68 @@
+You are given two strings str1 and str2 of the same length.
+
+In one operation, you can:
+
+Choose any character c
+
+Replace all occurrences of c in str1 with another lowercase character d
+
+You need to determine if str1 can be transformed into str2.
+
+
+str1 = "ab"
+str2 = "ba"
+ TRUE
+
+ str1 = "abcdefghijklmnopqrstuvwxyz"
+str2 = "bcdefghijklmnopqrstuvwxyza"
+
+FALSE
+
+
+
+##########################
+
+class Solution {
+    public boolean canConvert(String str1, String str2) {
+        // If both strings are already equal
+        if (str1.equals(str2)) {
+            return true;
+        }
+
+        // Mapping from str1 char -> str2 char
+        int[] map = new int[26];
+        Arrays.fill(map, -1);
+
+        // Track unique characters in str2
+        boolean[] used = new boolean[26];
+
+        for (int i = 0; i < str1.length(); i++) {
+            int c1 = str1.charAt(i) - 'a';
+            int c2 = str2.charAt(i) - 'a';
+
+            if (map[c1] == -1) {
+                map[c1] = c2;
+            } else if (map[c1] != c2) {
+                // Inconsistent mapping
+                return false;
+            }
+
+            used[c2] = true;
+        }
+
+        // Count unique characters in str2
+        int uniqueCount = 0;
+        for (boolean u : used) {
+            if (u) uniqueCount++;
+        }
+
+        // If str2 uses all 26 characters and strings are different,
+        // then cycles cannot be broken
+        return uniqueCount < 26;
+    }
+}
+
+
+Time: O(n)
+
+Space: O(1) (fixed arrays of size 26)
