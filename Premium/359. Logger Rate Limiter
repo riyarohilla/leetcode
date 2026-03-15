@@ -1,0 +1,117 @@
+Design a logger system that receives a stream of messages along with their timestamps. Each unique message should only be printed at most once every 10 seconds.
+
+Implement the Logger class:
+
+Functions:
+Logger() 
+Initializes the logger object.
+
+boolean shouldPrintMessage(int timestamp, String message)
+Returns true if the message should be printed at the given timestamp, otherwise returns false.
+Rules:
+
+If a message has not been printed in the last 10 seconds, return true
+
+Otherwise return false
+
+If returning true → message is considered printed at that timestamp
+
+Example:
+
+Input:
+
+["Logger", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage", "shouldPrintMessage"]
+
+[[], [1,"foo"], [2,"bar"], [3,"foo"], [8,"bar"], [10,"foo"], [11,"foo"]]
+
+Output:
+
+[null, true, true, false, false, false, true]
+
+
+
+
+---------------------------------
+
+import java.util.*;
+
+class Logger {
+
+    Map<String,Integer> map;
+
+    public Logger() {
+
+        map = new HashMap<>();
+    }
+
+    public boolean shouldPrintMessage(int timestamp, String message) {
+
+        if(!map.containsKey(message)){
+
+            map.put(message,timestamp);
+
+            return true;
+        }
+
+        int lastTime = map.get(message);
+
+        if(timestamp - lastTime >= 10){
+
+            map.put(message,timestamp);
+
+            return true;
+        }
+
+        return false;
+    }
+}
+
+
+
+_______________________
+
+FOllow up ->>>>
+
+What if millions of messages?
+
+Map grows forever.
+
+----------
+
+class Logger {
+
+    Queue<Pair<String,Integer>> queue;
+    Map<String,Integer> map;
+
+    public Logger(){
+
+        queue = new LinkedList<>();
+        map = new HashMap<>();
+    }
+
+    public boolean shouldPrintMessage(int timestamp, String message){
+
+        while(!queue.isEmpty() &&
+              timestamp - queue.peek().getValue() >=10){
+
+            Pair<String,Integer> old = queue.poll();
+
+            if(map.get(old.getKey())
+               == old.getValue()){
+
+                map.remove(old.getKey());
+            }
+        }
+
+        if(!map.containsKey(message)){
+
+            map.put(message,timestamp);
+
+            queue.add(new Pair(message,timestamp));
+
+            return true;
+        }
+
+        return false;
+    }
+}
